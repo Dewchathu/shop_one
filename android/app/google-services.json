@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "300079214107",
+    "project_id": "shopone-62791",
+    "storage_bucket": "shopone-62791.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:300079214107:android:750d92ec605fcaa54592be",
+        "android_client_info": {
+          "package_name": "com.dew.shop_one"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDItFBOVyMBg7Wz-evMUIM_jHcQY7c09i8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
