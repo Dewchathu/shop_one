@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../../constants.dart';
-import '../../../models/Product.dart';
+import '../../../models/product.dart';
 
 class ProductImages extends StatefulWidget {
   const ProductImages({

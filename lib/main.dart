@@ -1,9 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:shop_one/firebase_options.dart';
 import 'package:shop_one/routes.dart';
 import 'package:shop_one/screens/splash/splash_screen.dart';
 import 'package:shop_one/theme.dart';
 
-void main() {
+void main()async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform
+  );
   runApp(const MyApp());
 }
 

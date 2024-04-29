@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../../models/Product.dart';
+import '../../models/product.dart';
 import '../cart/cart_screen.dart';
 import 'components/color_dots.dart';
 import 'components/product_description.dart';
