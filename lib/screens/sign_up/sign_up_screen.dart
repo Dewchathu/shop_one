@@ -1,13 +1,46 @@
 import 'package:flutter/material.dart';
-
+import 'package:shop_one/services/auth_service.dart';
 import '../../components/socal_card.dart';
 import '../../constants.dart';
+import '../init_screen.dart';
 import 'components/sign_up_form.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   static String routeName = "/sign_up";
 
+
   const SignUpScreen({super.key});
+
+  @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadLoadingState(); // Load initial loading state from SharedPreferences
+  }
+
+  Future<void> _loadLoadingState() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _isLoading = prefs.getBool('isLoading') ?? false; // Default to false if key doesn't exist
+    });
+  }
+
+  Future<void> _setLoadingState(bool isLoading) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isLoading', isLoading);
+    setState(() {
+      _isLoading = isLoading;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,21 +62,25 @@ class SignUpScreen extends StatelessWidget {
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
-                  const SignUpForm(),
+                  SignUpForm(
+                    isLoading: _isLoading,
+                    setLoadingState: _setLoadingState,
+                  ),
                   const SizedBox(height: 16),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       SocalCard(
                         icon: "assets/icons/google-icon.svg",
-                        press: () {},
+                        press: () async {
+                          await _setLoadingState(true); // Set loading state to true
+                          AuthService().signInWithGoogle(context).then((success) {
+                              _setLoadingState(false);
+                          });
+                        },
                       ),
                       SocalCard(
                         icon: "assets/icons/facebook-2.svg",
-                        press: () {},
-                      ),
-                      SocalCard(
-                        icon: "assets/icons/twitter.svg",
                         press: () {},
                       ),
                     ],

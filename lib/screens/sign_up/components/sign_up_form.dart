@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:shop_one/services/auth_service.dart';
 
 import '../../../components/custom_surfix_icon.dart';
@@ -7,7 +8,9 @@ import '../../../constants.dart';
 import '../../complete_profile/complete_profile_screen.dart';
 
 class SignUpForm extends StatefulWidget {
-  const SignUpForm({super.key});
+  final bool isLoading;
+  final Function(bool) setLoadingState;
+  const SignUpForm({super.key, required this.isLoading, required this.setLoadingState});
 
   @override
   _SignUpFormState createState() => _SignUpFormState();
@@ -19,8 +22,11 @@ class _SignUpFormState extends State<SignUpForm> {
   String? password;
   String? conform_password;
   bool remember = false;
+  bool _isObscure = true;
+  bool _isObscureCon = true;
   final List<String?> errors = [];
   final _auth = AuthService();
+
 
   void addError({String? error}) {
     if (!errors.contains(error)) {
@@ -74,7 +80,7 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           const SizedBox(height: 20),
           TextFormField(
-            obscureText: true,
+            obscureText: _isObscure,
             onSaved: (newValue) => password = newValue,
             onChanged: (value) {
               if (value.isNotEmpty) {
@@ -82,7 +88,7 @@ class _SignUpFormState extends State<SignUpForm> {
               } else if (value.length >= 8) {
                 removeError(error: kShortPassError);
               }
-              password = value;
+              return;
             },
             validator: (value) {
               if (value!.isEmpty) {
@@ -94,16 +100,26 @@ class _SignUpFormState extends State<SignUpForm> {
               }
               return null;
             },
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "Password",
               hintText: "Enter your password",
               floatingLabelBehavior: FloatingLabelBehavior.always,
-              suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Lock.svg"),
+              suffixIcon: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isObscure = !_isObscure;
+                  });
+                },
+                child: Icon(
+                  _isObscure ? Icons.visibility_off : Icons.visibility,
+                  color: _isObscure ? Colors.grey : kPrimaryColor,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 20),
           TextFormField(
-            obscureText: true,
+            obscureText: _isObscureCon,
             onSaved: (newValue) => conform_password = newValue,
             onChanged: (value) {
               if (value.isNotEmpty) {
@@ -123,11 +139,21 @@ class _SignUpFormState extends State<SignUpForm> {
               }
               return null;
             },
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "Confirm Password",
               hintText: "Re-enter your password",
               floatingLabelBehavior: FloatingLabelBehavior.always,
-              suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Lock.svg"),
+              suffixIcon:  GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isObscureCon = !_isObscureCon;
+                  });
+                },
+                child: Icon(
+                  _isObscureCon ? Icons.visibility_off : Icons.visibility,
+                  color: _isObscureCon ? Colors.grey : kPrimaryColor,
+                ),
+              ),
             ),
           ),
           FormError(errors: errors),
@@ -136,12 +162,28 @@ class _SignUpFormState extends State<SignUpForm> {
             onPressed: () {
               if (_formKey.currentState!.validate()) {
                 _formKey.currentState!.save();
-                // if all are valid then go to success screen
-                _signUp();
-                Navigator.pushNamed(context, CompleteProfileScreen.routeName);
+                widget.setLoadingState(true); // Set loading state to true
+                _signUp().then((success) {
+                  if (success) {
+                    // Navigate to next screen if sign-up is successful
+                    Navigator.pushNamed(context, CompleteProfileScreen.routeName);
+                  } else {
+                    // Handle sign-up failure
+                    widget.setLoadingState(false); // Set loading state to false
+                    // Show error message or retry logic
+                  }
+                });
               }
             },
-            child: const Text("Continue"),
+            child: widget.isLoading?const SizedBox(
+              height: 30,
+              child: LoadingIndicator(
+                indicatorType: Indicator.circleStrokeSpin,
+                colors: [Colors.white],
+                strokeWidth: 2,
+              ),
+            )
+                :const Text("Continue"),
           ),
         ],
       ),

@@ -15,8 +15,7 @@ class CompleteProfileForm extends StatefulWidget {
 class _CompleteProfileFormState extends State<CompleteProfileForm> {
   final _formKey = GlobalKey<FormState>();
   final List<String?> errors = [];
-  String? firstName;
-  String? lastName;
+  String? fullName;
   String? phoneNumber;
   String? address;
 
@@ -43,7 +42,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
       child: Column(
         children: [
           TextFormField(
-            onSaved: (newValue) => firstName = newValue,
+            onSaved: (newValue) => fullName = newValue,
             onChanged: (value) {
               if (value.isNotEmpty) {
                 removeError(error: kNamelNullError);
@@ -58,18 +57,8 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
               return null;
             },
             decoration: const InputDecoration(
-              labelText: "First Name",
-              hintText: "Enter your first name",
-              floatingLabelBehavior: FloatingLabelBehavior.always,
-              suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
-            ),
-          ),
-          const SizedBox(height: 20),
-          TextFormField(
-            onSaved: (newValue) => lastName = newValue,
-            decoration: const InputDecoration(
-              labelText: "Last Name",
-              hintText: "Enter your last name",
+              labelText: "Full Name",
+              hintText: "Enter your full name",
               floatingLabelBehavior: FloatingLabelBehavior.always,
               suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/User.svg"),
             ),

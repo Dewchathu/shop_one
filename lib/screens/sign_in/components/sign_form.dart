@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 import '../../../components/custom_surfix_icon.dart';
 import '../../../components/form_error.dart';
@@ -19,6 +20,8 @@ class _SignFormState extends State<SignForm> {
   String? email;
   String? password;
   bool? remember = false;
+  bool _isObscure = true;
+  bool _isLoading = false;
   final List<String?> errors = [];
 
   void addError({String? error}) {
@@ -73,7 +76,7 @@ class _SignFormState extends State<SignForm> {
           ),
           const SizedBox(height: 20),
           TextFormField(
-            obscureText: true,
+            obscureText: _isObscure,
             onSaved: (newValue) => password = newValue,
             onChanged: (value) {
               if (value.isNotEmpty) {
@@ -93,11 +96,21 @@ class _SignFormState extends State<SignForm> {
               }
               return null;
             },
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "Password",
               hintText: "Enter your password",
               floatingLabelBehavior: FloatingLabelBehavior.always,
-              suffixIcon: CustomSurffixIcon(svgIcon: "assets/icons/Lock.svg"),
+              suffixIcon: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isObscure = !_isObscure;
+                  });
+                },
+                child: Icon(
+                  _isObscure ? Icons.visibility_off : Icons.visibility,
+                  color: _isObscure ? Colors.grey : kPrimaryColor,
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 20),
@@ -135,7 +148,15 @@ class _SignFormState extends State<SignForm> {
                 Navigator.pushNamed(context, LoginSuccessScreen.routeName);
               }
             },
-            child: const Text("Continue"),
+            child: _isLoading?const SizedBox(
+              height: 30,
+              child: LoadingIndicator(
+                  indicatorType: Indicator.circleStrokeSpin,
+                  colors: [Colors.white],
+                  strokeWidth: 2,
+              ),
+            )
+            :const Text("Continue"),
           ),
         ],
       ),

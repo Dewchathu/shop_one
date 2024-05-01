@@ -49,10 +49,6 @@ class SignInScreen extends StatelessWidget {
                         icon: "assets/icons/facebook-2.svg",
                         press: () {},
                       ),
-                      SocalCard(
-                        icon: "assets/icons/twitter.svg",
-                        press: () {},
-                      ),
                     ],
                   ),
                   const SizedBox(height: 20),
